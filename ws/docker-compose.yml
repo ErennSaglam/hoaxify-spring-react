@@ -1,0 +1,17 @@
+# Lokal geliştirme veritabanı: docker compose up -d
+# Değerler ws/.env dosyasından okunur (bkz. .env.example)
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hoaxify-postgres
+    environment:
+      POSTGRES_DB: hoaxify
+      POSTGRES_USER: ${DB_USERNAME:-hoaxify}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD .env dosyasinda tanimli olmali}
+    ports:
+      - "5433:5432"
+    volumes:
+      - hoaxify-pgdata:/var/lib/postgresql/data
+
+volumes:
+  hoaxify-pgdata:

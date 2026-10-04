@@ -1,0 +1,24 @@
+package com.hoaxify.ws.validation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
+/** Base64 dosyanın gerçek içerik tipini (uzantıya değil byte'lara bakarak) kontrol eder. */
+@Constraint(validatedBy = FileTypeValidator.class)
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface FileType {
+
+	String message() default "Only {types} are allowed";
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
+	String[] types();
+}

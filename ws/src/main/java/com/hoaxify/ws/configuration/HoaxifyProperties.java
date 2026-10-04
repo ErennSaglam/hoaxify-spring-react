@@ -1,80 +1,51 @@
 package com.hoaxify.ws.configuration;
 
+import java.time.Duration;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
+import lombok.Data;
+
+/**
+ * application.properties'teki "hoaxify.*" ayarlarını tip güvenli şekilde okur.
+ * @Value("${...}") ile tek tek okumak yerine tek bir nesnede toplar.
+ * Kayıt: WsApplication üzerindeki @EnableConfigurationProperties.
+ */
+@Data
 @ConfigurationProperties(prefix = "hoaxify")
-@Configuration
 public class HoaxifyProperties {
-    
-    private Email email;
 
-    private Client client;
+	private Client client = new Client();
 
-    private Storage storage = new Storage();
+	private Email email = new Email();
 
-    private String tokenType;
+	private Storage storage = new Storage();
 
-    public String getTokenType() {
-        return tokenType;
-    }
+	private Jwt jwt = new Jwt();
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
+	/** basic | jwt | opaque -> hangi ITokenService implementasyonunun kullanılacağını belirler */
+	private String tokenType = "opaque";
 
-    public Storage getStorage() {
-        return storage;
-    }
+	@Data
+	public static class Client {
+		/** Maillerdeki linklerin gideceği frontend adresi */
+		private String host;
+	}
 
-    public void setStorage(Storage storage) {
-        this.storage = storage;
-    }
+	@Data
+	public static class Email {
+		private String from;
+	}
 
-    public Client getClient() {
-        return client;
-    }
+	@Data
+	public static class Storage {
+		private String root = "uploads";
+		private String profile = "profile";
+	}
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public Email getEmail() {
-        return email;
-    }
-
-    public void setEmail(Email email) {
-        this.email = email;
-    }
-
-    public static record Email(
-        String username,
-        String password,
-        String host,
-        int port,
-        String from
-    ){}
-
-    public static record Client(
-        String host
-    ){}
-
-    public static class Storage {
-        String root = "uploads";
-        String profile = "profile";
-
-        public String getRoot() {
-            return root;
-        }
-        public void setRoot(String root) {
-            this.root = root;
-        }
-        
-        public String getProfile() {
-            return profile;
-        }
-        public void setProfile(String profile) {
-            this.profile = profile;
-        }
-    }
+	@Data
+	public static class Jwt {
+		private String secret;
+		private Duration validity = Duration.ofHours(24);
+	}
 }
