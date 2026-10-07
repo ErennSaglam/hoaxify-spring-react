@@ -7,5 +7,22 @@
   "passwordMismatch": "Sifreniz eslesmiyor",
   "genericError": "Beklenmedik bir hata olustu. Lutfen tekrar deneyin",
   "userNotFoundError": "Kullanici bulunamadi",
-  "login": "Giris yap"
+  "login": "Giris yap",
+  "hoaxes": "Hoaxlar",
+  "noHoaxes": "Henuz hoax yok",
+  "loadMore": "Daha fazla",
+  "hoaxPlaceholder": "Neler dusunuyorsun?",
+  "tagsPlaceholder": "Etiketler (ornek: java, spring)",
+  "share": "Paylas",
+  "hoaxCreated": "Hoax paylasildi",
+  "delete": "Sil",
+  "deleteHoaxConfirm": "Bu hoax silinsin mi?",
+  "popularTags": "Populer etiketler",
+  "filteredByTag": "Etikete gore filtrelendi:",
+  "clearFilter": "temizle",
+  "bio": "Hakkimda",
+  "topUsers": "En aktif kullanicilar",
+  "hoaxCount_one": "{{count}} hoax",
+  "hoaxCount_other": "{{count}} hoax",
+  "lastHoax": "son"
 }

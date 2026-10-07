@@ -15,6 +15,7 @@ export function UserEditForm({ setEditMode, setTempImage }) {
   const [generalError, setGeneralError] = useState();
   const dispatch = useAuthDispatch();
   const [newImage, setNewImage] = useState();
+  const [newBio, setNewBio] = useState(authState.bio || "");
 
   const onChangeUsername = (event) => {
     setNewUsername(event.target.value);
@@ -29,6 +30,7 @@ export function UserEditForm({ setEditMode, setTempImage }) {
   const onClickCancel = () => {
     setEditMode(false);
     setNewUsername(authState.username);
+    setNewBio(authState.bio || "");
     setNewImage();
     setTempImage();
   };
@@ -57,10 +59,10 @@ export function UserEditForm({ setEditMode, setTempImage }) {
     setErrors({});
     setGeneralError();
     try {
-      const { data } = await updateUser(authState.id, { username: newUsername, image: newImage });
+      const { data } = await updateUser(authState.id, { username: newUsername, image: newImage, bio: newBio });
       dispatch({
         type: "user-update-success",
-        data: { username: data.username, image: data.image },
+        data: { username: data.username, image: data.image, bio: data.bio },
       });
       setEditMode(false);
     } catch (axiosError) {
@@ -84,6 +86,15 @@ export function UserEditForm({ setEditMode, setTempImage }) {
         defaultValue={authState.username}
         onChange={onChangeUsername}
         error={errors.username}
+      />
+      <Input
+        label={t("bio")}
+        defaultValue={authState.bio}
+        onChange={(event) => {
+          setNewBio(event.target.value);
+          setErrors((lastErrors) => ({ ...lastErrors, bio: undefined }));
+        }}
+        error={errors.bio}
       />
       <Input
         label="Profile Image"

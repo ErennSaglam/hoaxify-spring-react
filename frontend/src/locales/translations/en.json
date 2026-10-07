@@ -7,5 +7,22 @@
   "passwordMismatch": "Password mismatch",
   "genericError": "Unexpected error occured. Please try again",
   "userNotFoundError": "User not found",
-  "login": "Login"
+  "login": "Login",
+  "hoaxes": "Hoaxes",
+  "noHoaxes": "No hoaxes yet",
+  "loadMore": "Load more",
+  "hoaxPlaceholder": "What's on your mind?",
+  "tagsPlaceholder": "Tags (e.g. java, spring)",
+  "share": "Share",
+  "hoaxCreated": "Hoax shared",
+  "delete": "Delete",
+  "deleteHoaxConfirm": "Delete this hoax?",
+  "popularTags": "Popular tags",
+  "filteredByTag": "Showing hoaxes tagged",
+  "clearFilter": "clear",
+  "bio": "Bio",
+  "topUsers": "Most active users",
+  "hoaxCount_one": "{{count}} hoax",
+  "hoaxCount_other": "{{count}} hoaxes",
+  "lastHoax": "last"
 }

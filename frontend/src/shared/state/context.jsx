@@ -23,7 +23,8 @@ const authReducer = (authState, action) => {
       return {
         ...authState,
         username: action.data.username,
-        image: action.data.image
+        image: action.data.image,
+        bio: action.data.bio
       }
 
     default:
