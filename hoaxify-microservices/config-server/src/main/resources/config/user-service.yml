@@ -1,0 +1,22 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5434}/userdb
+    username: user_svc
+    password: ${USER_DB_PASSWORD}
+  data:
+    redis:
+      # Kullanıcı profilleri Redis'te cache'lenir (kursundaki @Cacheable örneğinin gerçek kullanımı)
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+  grpc:
+    server:
+      # REST 8082'de, gRPC ayrı portta (HTTP/2)
+      port: 9095
+
+hoaxify:
+  storage:
+    root: ${STORAGE_ROOT:uploads}
+    profile: profile

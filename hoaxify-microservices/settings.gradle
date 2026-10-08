@@ -1,0 +1,17 @@
+rootProject.name = 'hoaxify-microservices'
+
+// Paylaşılan kütüphaneler (çalıştırılabilir uygulama değiller, diğer modüllerin bağımlılığı)
+include 'common'          // olaylar (event), sabitler, ApiError: hiçbir framework'e bağlı değil
+include 'common-web'      // servlet tabanlı servislerin ortak "starter"ı: hata yönetimi, i18n, @CurrentUserId
+include 'common-messaging' // RabbitMQ ortak "starter"ı: exchange, JSON dönüştürücü, dead letter queue
+include 'grpc-contract'   // .proto sözleşmesi ve ondan üretilen Java kodu
+
+// Altyapı servisleri
+include 'config-server'
+include 'api-gateway'
+
+// İş (domain) servisleri
+include 'auth-service'
+include 'user-service'
+include 'hoax-service'
+include 'notification-service'

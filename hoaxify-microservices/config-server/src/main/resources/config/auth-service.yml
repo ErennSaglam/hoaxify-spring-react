@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5434}/authdb
+    username: auth_svc
+    password: ${AUTH_DB_PASSWORD}
+  data:
+    redis:
+      # Oturum token'ları Redis'te TTL ile tutulur (süre dolunca Redis kendisi siler)
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+
+hoaxify:
+  token:
+    validity: 24h
+  clients:
+    # Feign ile giriş cevabı için kullanıcı profili çekilir
+    user-service-url: http://${USER_SERVICE_HOST:localhost}:8082
+  seed:
+    # Dev ortamında user1..user10@mail.com / P4ssword hesapları (sadece authdb boşsa)
+    enabled: ${SEED_DATA:true}

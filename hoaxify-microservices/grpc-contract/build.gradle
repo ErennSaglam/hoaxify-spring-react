@@ -1,0 +1,28 @@
+// .proto sözleşmesi ve ondan üretilen Java sınıfları. Hem sunucu (user-service) hem istemci (hoax-service)
+// bu modüle bağımlıdır; böylece iki taraf her zaman AYNI sözleşmeyle derlenir.
+apply plugin: 'com.google.protobuf'
+
+dependencies {
+    api libs.grpcProtobuf
+    api libs.grpcStub
+    // Üretilen kodda @javax.annotation.Generated var; sadece derleme için gerekli
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+}
+
+protobuf {
+    // protoc: .proto dosyasından mesaj sınıflarını (UserSummary, GetUsersRequest ...) üretir
+    protoc {
+        artifact = "com.google.protobuf:protoc:${versions.protobuf}"
+    }
+    // grpc eklentisi: servis tanımından sunucu iskeletini (ImplBase) ve istemci stub'ını üretir
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${versions.grpc}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}

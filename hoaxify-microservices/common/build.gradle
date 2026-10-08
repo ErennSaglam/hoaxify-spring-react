@@ -1,0 +1,4 @@
+// Framework'e bağımlı olmayan paylaşılan sözleşmeler. Hem servlet servisleri hem reaktif gateway kullanabilir.
+dependencies {
+    api 'com.fasterxml.jackson.core:jackson-annotations'
+}

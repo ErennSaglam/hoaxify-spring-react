@@ -1,0 +1,48 @@
+// Servisler arası sözleşme: hoax-service -> user-service
+//
+// ÖNEMLİ KURAL (geriye uyumluluk): Alan numaralarını (= 1, = 2 ...) ASLA değiştirme ve silinen bir
+// alanın numarasını başka alana verme. Veri kablo üzerinde alan adıyla değil numarayla taşınır;
+// eski ve yeni servisler aynı anda çalışırken ancak böyle birbirini anlayabilir.
+// Alan silinecekse:  reserved 4;  reserved "image";
+
+syntax = "proto3";
+
+package hoaxify.user.v1;   // v1: kırıcı (breaking) bir değişiklik gerekirse v2 paketi açılır
+
+option java_multiple_files = true;
+option java_package = "com.hoaxify.grpc.user.v1";
+option java_outer_classname = "UserQueryServiceProto";
+
+// Sadece OKUMA sorguları: yazma işlemleri REST veya olaylar (RabbitMQ) üzerinden yapılır
+service UserQueryService {
+
+  // Tek kullanıcı. Kullanıcı yoksa gRPC NOT_FOUND durumu döner.
+  rpc GetUser (GetUserRequest) returns (UserSummary);
+
+  // Toplu sorgu: bir sayfadaki 10 hoax'ın yazarlarını TEK çağrıda almak için.
+  // Her hoax için ayrı çağrı yapmak ağ üzerinde N+1 problemine yol açardı.
+  // Bulunamayan id'ler sonuçta yer almaz (hata fırlatılmaz).
+  rpc GetUsers (GetUsersRequest) returns (GetUsersResponse);
+}
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message GetUsersRequest {
+  repeated int64 ids = 1;   // repeated = liste
+}
+
+message GetUsersResponse {
+  repeated UserSummary users = 1;
+}
+
+message UserSummary {
+  int64 id = 1;
+  string username = 2;
+  string email = 3;
+  // proto3'te string'in "yok" (null) hali yoktur, boş string olur.
+  // optional ile hasImage() / hasBio() kontrolü kazanırız: "resmi yok" ile "boş resim" ayrılabilir.
+  optional string image = 4;
+  optional string bio = 5;
+}

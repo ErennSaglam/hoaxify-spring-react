@@ -1,0 +1,119 @@
+# Altyapı:        docker compose up -d
+# Altyapı + servisler (önce ./gradlew bootJar):  docker compose --profile apps up -d --build
+# Değerler .env dosyasından okunur (bkz. .env.example)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hoaxify-ms-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?.env dosyasinda tanimli olmali}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD:?}
+      USER_DB_PASSWORD: ${USER_DB_PASSWORD:?}
+      HOAX_DB_PASSWORD: ${HOAX_DB_PASSWORD:?}
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: hoaxify-ms-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-hoaxify}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?}
+    ports:
+      - "5672:5672"     # AMQP (servisler)
+      - "15672:15672"   # Yönetim arayüzü: http://localhost:15672
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: hoaxify-ms-redis
+    ports:
+      - "6380:6379"     # 6379 makinede başka bir Redis'e ait
+
+  # ------------------------------------------------------------------------------------------
+  # Uygulama servisleri (profile: apps). Önce: ./gradlew bootJar
+  # Sadece api-gateway dışarıya açık (8000); diğerlerine sadece bu Docker ağından erişilir.
+  # Servisler birbirini container adıyla bulur (http://user-service:8082) - Docker'ın iç DNS'i.
+  # ------------------------------------------------------------------------------------------
+  config-server:
+    profiles: [apps]
+    build: ./config-server
+    container_name: hoaxify-ms-config-server
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8071/actuator/health | grep -q UP"]
+      interval: 5s
+      retries: 20
+
+  auth-service:
+    profiles: [apps]
+    build: ./auth-service
+    container_name: hoaxify-ms-auth-service
+    env_file: .env
+    environment: &service-env
+      CONFIG_SERVER_URL: http://config-server:8071
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      USER_SERVICE_HOST: user-service
+      AUTH_SERVICE_HOST: auth-service
+      HOAX_SERVICE_HOST: hoax-service
+    depends_on: &service-deps
+      config-server: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+
+  user-service:
+    profiles: [apps]
+    build: ./user-service
+    container_name: hoaxify-ms-user-service
+    env_file: .env
+    environment:
+      <<: *service-env
+      STORAGE_ROOT: /app/uploads
+    volumes:
+      - uploads:/app/uploads
+    depends_on: *service-deps
+
+  hoax-service:
+    profiles: [apps]
+    build: ./hoax-service
+    container_name: hoaxify-ms-hoax-service
+    env_file: .env
+    environment: *service-env
+    depends_on: *service-deps
+
+  notification-service:
+    profiles: [apps]
+    build: ./notification-service
+    container_name: hoaxify-ms-notification-service
+    env_file: .env
+    environment: *service-env
+    depends_on: *service-deps
+
+  api-gateway:
+    profiles: [apps]
+    build: ./api-gateway
+    container_name: hoaxify-ms-api-gateway
+    environment: *service-env
+    ports:
+      - "8000:8000"
+    depends_on:
+      config-server: { condition: service_healthy }
+
+volumes:
+  pgdata:
+  uploads:

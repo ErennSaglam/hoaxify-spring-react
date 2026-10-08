@@ -1,0 +1,6 @@
+// RabbitMQ kullanan servislerin ortak "starter"ı (bkz. HoaxifyMessagingAutoConfiguration)
+dependencies {
+    api project(':common')
+    api libs.springBootStarterAmqp
+    api 'com.fasterxml.jackson.core:jackson-databind'
+}

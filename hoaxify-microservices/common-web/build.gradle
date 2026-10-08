@@ -1,0 +1,9 @@
+// Servlet tabanlı (Spring MVC) servislerin ortak "starter"ı.
+// Servis bu modülü eklediğinde HoaxifyWebAutoConfiguration kendiliğinden devreye girer.
+dependencies {
+    api project(':common')
+    api libs.springBootStarterWeb
+    api libs.springBootStarterValidation
+    // DtoPage, Spring Data'nın Page tipini kullanır; Spring Data'yı kullanmayan servislere zorla eklemiyoruz
+    compileOnly 'org.springframework.data:spring-data-commons'
+}

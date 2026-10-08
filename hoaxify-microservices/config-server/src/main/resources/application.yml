@@ -1,0 +1,17 @@
+server:
+  port: 8071
+
+spring:
+  application:
+    name: config-server
+  # native: config dosyaları bu projenin içinde (classpath:/config). Kursundaki gibi bir Git reposu da
+  # kullanılabilir (profiles.active: git + spring.cloud.config.server.git.uri); gerçek projelerde genelde Git'tir.
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          # Önce kaynak klasördeki dosyalar (config-server klasöründen çalıştırılınca düzenlemeler yeniden
+          # derlemeden geçerli olur), bulunamazsa jar içindeki kopya. Değişiklikten sonra ilgili servisi yeniden başlat.
+          search-locations: file:./src/main/resources/config/,classpath:/config/

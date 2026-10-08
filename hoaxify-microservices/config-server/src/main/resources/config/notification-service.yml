@@ -1,0 +1,18 @@
+server:
+  port: 8084
+
+spring:
+  mail:
+    host: ${MAIL_HOST:smtp.ethereal.email}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+hoaxify:
+  mail:
+    from: noreply@my-app.com
+    # log: mail göndermek yerine linki loglar (dev) | smtp: gerçek gönderim
+    mode: ${MAIL_MODE:log}

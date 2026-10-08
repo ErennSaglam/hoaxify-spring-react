@@ -1,0 +1,44 @@
+# TÜM servislerin ortak ayarları. Servise özel dosya (ör. auth-service.yml) aynı anahtarı ezer.
+# ${...} değerleri config-server'da değil, ayarı çeken SERVİSTE çözülür (ortam değişkeni veya .env dosyası).
+
+spring:
+  messages:
+    basename: messages,common-messages   # common-messages: common-web kütüphanesindeki ortak mesajlar
+    fallback-to-system-locale: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  data:
+    web:
+      pageable:
+        max-page-size: 50
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:hoaxify}
+    password: ${RABBITMQ_PASSWORD}
+    listener:
+      simple:
+        # Dinleyici hata verirse mesaj 3 kez denenir (1s, 2s, 4s arayla); hâlâ olmuyorsa
+        # yeniden kuyruğa konmaz (sonsuz döngü olmasın), dead letter queue'ya gider
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1s
+          multiplier: 2
+
+hoaxify:
+  # Maillerdeki linklerin gideceği frontend adresi
+  client-host: ${CLIENT_HOST:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    com.hoaxify: DEBUG

@@ -1,0 +1,8 @@
+server:
+  port: 8000
+
+hoaxify:
+  gateway:
+    auth-service-url: http://${AUTH_SERVICE_HOST:localhost}:8081
+    user-service-url: http://${USER_SERVICE_HOST:localhost}:8082
+    hoax-service-url: http://${HOAX_SERVICE_HOST:localhost}:8083

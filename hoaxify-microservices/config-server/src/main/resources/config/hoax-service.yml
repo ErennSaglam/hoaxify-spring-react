@@ -1,0 +1,30 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5434}/hoaxdb
+    username: hoax_svc
+    password: ${HOAX_DB_PASSWORD}
+  jpa:
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 20
+  sql:
+    init:
+      # DAO'nun çağırdığı PostgreSQL fonksiyonu (monolith'teki functions.sql)
+      mode: always
+      schema-locations: classpath:db/functions.sql
+      separator: ";;"
+  grpc:
+    client:
+      channels:
+        user-service:
+          address: static://${USER_SERVICE_HOST:localhost}:9095
+          negotiation-type: plaintext   # iç ağ; üretimde TLS veya service mesh (mTLS) kullanılır
+
+hoaxify:
+  seed:
+    # Dev ortamında user1..user3 için örnek hoax (sadece hoaxdb boşsa)
+    enabled: ${SEED_DATA:true}
