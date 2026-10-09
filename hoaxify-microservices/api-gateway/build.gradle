@@ -1,0 +1,14 @@
+apply plugin: 'org.springframework.boot'
+
+// Gateway REAKTİF (WebFlux + Netty): az thread ile çok sayıda eşzamanlı isteği bekletebilir.
+// Bu yüzden common-web (servlet) değil, sadece framework'süz common modülünü kullanır.
+dependencies {
+    implementation project(':common')
+    implementation libs.springCloudGateway
+    implementation libs.springCloudStarterConfig
+    implementation libs.springBootStarterActuator
+    annotationProcessor libs.springBootConfigProcessor
+    // Apple Silicon'da Netty'nin DNS çözümleyicisi için native kütüphane (yoksa açılışta zararsız bir ERROR logu basar)
+    runtimeOnly('io.netty:netty-resolver-dns-native-macos') { artifact { classifier = 'osx-aarch_64' } }
+    testImplementation 'io.projectreactor:reactor-test'
+}

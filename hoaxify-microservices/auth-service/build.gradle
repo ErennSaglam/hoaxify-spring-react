@@ -1,0 +1,16 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':common-web')
+    implementation libs.springCloudStarterConfig
+    implementation libs.springBootStarterDataJpa
+    implementation libs.springBootStarterDataRedis
+    implementation project(':common-messaging')
+    implementation libs.springCloudOpenFeign
+    // Sadece BCrypt için; tam Spring Security gerekmiyor (kimlik doğrulama gateway'de)
+    implementation libs.springSecurityCrypto
+    implementation libs.springBootStarterActuator
+    implementation libs.springdoc
+    runtimeOnly libs.postgresql
+    annotationProcessor libs.springBootConfigProcessor
+}
