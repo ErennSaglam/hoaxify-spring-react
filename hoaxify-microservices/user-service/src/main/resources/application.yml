@@ -1,0 +1,10 @@
+# Servisin kendi dosyasında sadece "kim olduğu" ve "ayarlarını nereden alacağı" yazar.
+# Asıl ayarlar config-server'da: config-server/src/main/resources/config/user-service.yml
+spring:
+  application:
+    name: user-service
+  config:
+    import:
+      - optional:file:.env[.properties]        # IDE'den modül klasöründe çalıştırılırsa
+      - optional:file:../.env[.properties]     # ./gradlew :user-service:bootRun ile çalıştırılırsa
+      - optional:configserver:${CONFIG_SERVER_URL:http://localhost:8071}
