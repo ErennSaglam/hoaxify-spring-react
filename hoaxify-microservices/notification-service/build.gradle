@@ -1,0 +1,10 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':common-messaging')
+    implementation libs.springCloudStarterConfig
+    implementation libs.springBootStarterWeb        // sadece /actuator/health için
+    implementation libs.springBootStarterMail
+    implementation libs.springBootStarterActuator
+    annotationProcessor libs.springBootConfigProcessor
+}

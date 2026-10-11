@@ -1,0 +1,15 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':common-web')
+    implementation project(':common-messaging')
+    implementation project(':grpc-contract')
+    implementation libs.springCloudStarterConfig
+    implementation libs.springBootStarterDataJpa
+    implementation libs.springGrpcClient
+    implementation libs.springBootStarterActuator
+    implementation libs.springdoc
+    runtimeOnly libs.postgresql
+    annotationProcessor libs.springBootConfigProcessor
+    testImplementation libs.grpcInProcess
+}
